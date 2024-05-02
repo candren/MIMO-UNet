@@ -5,6 +5,8 @@ from torch.backends import cudnn
 from models.MIMOUNet import build_net
 from train import _train
 from eval import _eval
+import speech_recognition as sr
+
 
 
 def main(args):
@@ -35,7 +37,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     # Directories
-    parser.add_argument('--model_name', default='MIMO-UNet', choices=['MIMO-UNet', 'MIMO-UNetPlus'], type=str)
+    parser.add_argument('--model_name', model_name='Gypsy')    
     parser.add_argument('--data_dir', type=str, default='dataset/GOPRO')
     parser.add_argument('--mode', default='test', choices=['train', 'test'], type=str)
 
@@ -55,6 +57,17 @@ if __name__ == '__main__':
     # Test
     parser.add_argument('--test_model', type=str, default='weights/MIMO-UNet.pkl')
     parser.add_argument('--save_image', type=bool, default=False, choices=[True, False])
+
+import speech_recognition as sr
+r = sr.Recognizer()
+with sr.Microphone() as source:
+    print("Speak Anything :")
+    audio = r.listen(source)
+    try:
+        text = r.recognize_google(audio)
+        print("You said : {}".format(text))
+    except:
+        print("Sorry could not recognize what you said")
 
     args = parser.parse_args()
     args.model_save_dir = os.path.join('results/', args.model_name, 'weights/')
